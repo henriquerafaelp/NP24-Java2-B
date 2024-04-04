@@ -59,6 +59,36 @@ public class ProdutoSimples {
 	public void setCusto(double custo) {
 		this.custo = custo;
 	}
+	
+	@Override
+	public String toString() {
+		return"Id: " + getId()+  "\n"+
+				   "Descrição: " + getDescricao() + "\n"+
+				   "Saldo: " + getSaldo() + "\n"+
+				   "Custo: " + getCusto();
+		}
+	//
+	public void gravar () throws SQLException {
+		PreparedStatement stmt = conn.prepareStatement("update produto set descricao=?, " + "saldo=?, custo=? where id = ?");
+		//Preenchendo os parametros
+		stmt.setString(1, getDescricao());
+		stmt.setInt(2,getSaldo());
+		stmt.setDouble(3, getCusto());
+		stmt.setInt(4, getId());
+		//Disparando a Query
+		int nRegs = stmt.executeUpdate();
+		System.out.println(nRegs + "registro (s) afetados (s)!");
+	}
+		public void apagar () throws SQLException {
+			PreparedStatement stmt = conn.prepareStatement("Delete from produto where id = ?");
+			//Preenchendo os parametros
+			stmt.setInt(1,getId());			
+			//Disparando a Query
+			int nRegs = stmt.executeUpdate();
+			System.out.println(nRegs + "registro (s) afetados (s)!");
+		
+		
+	}
 
 	//
 	public static ProdutoSimples create(String des, int sal, double cus) throws SQLException {
@@ -69,7 +99,7 @@ public class ProdutoSimples {
 		//Gravar no banco de dados
 		//Preparando o comando para banco de dados
 		PreparedStatement stm = ret.conn.
-				prepareStatement("insert into " + "produto(descricao,saldo,custo)"  + "values(?,?,?",Statement.RETURN_GENERATED_KEYS);
+				prepareStatement("insert into " + "produto(descricao,saldo,custo)"  + "values(?,?,?)",Statement.RETURN_GENERATED_KEYS);
 						//Os paramentros começam com 1 e zero
 						stm.setString(1, des);
 				        stm.setInt(2, sal);
@@ -86,7 +116,35 @@ public class ProdutoSimples {
 							// TODO Auto-generated catch block
 							System.out.println(e.getMessage());
 						}
+				       
 				        
 		return ret;
 	}
+
+    public static ProdutoSimples findByPK (int cod ) throws Exception {
+    	ProdutoSimples ret = new ProdutoSimples();
+    	if (cod>0) {
+    		PreparedStatement stmt = ret.conn.prepareStatement("Select id, descricao, saldo, custo" + "from produto where id = ?"); 
+    		stmt.setInt(1,cod);
+    		//Colocando o parametro da query
+    		stmt.setInt(1,cod);
+    		//Executando a query
+    		ResultSet rs = stmt.executeQuery();
+    		//Verificando se encontrou algo
+    		if (rs.next()) {
+    			ret.setId(rs.getInt(1));
+    			ret.setDescricao(rs.getString(2));
+    			ret.setSaldo(rs.getInt(3));
+    			ret.setCusto(rs.getDouble(4));
+    			
+    		}else {
+    			throw new Exception ("Registro não encontrado!");
+    		}
+    		
+    	}else {
+    		throw new Exception ("O codigo deve ser maior que zero");
+    	}
+    	return ret;
+    }
+
 }
