@@ -1,7 +1,6 @@
 package br.com.senaisp.bauru.henrique.classes;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,7 +20,7 @@ public class ProdutoSimples {
 		saldo = 0;
 		custo = 0;
 		// Instanciando o DriverManager
-		conn = DriverManager.getConnection("jdbc:sqlite:C:\\Javalibs\\dados\\NP24_JAVA2_B.DB");
+		conn = ConexaoBD.getInstancia().getConn();
 	}
 
 	// getter e setters
@@ -124,7 +123,7 @@ public class ProdutoSimples {
     public static ProdutoSimples findByPK (int cod ) throws Exception {
     	ProdutoSimples ret = new ProdutoSimples();
     	if (cod>0) {
-    		PreparedStatement stmt = ret.conn.prepareStatement("Select id, descricao, saldo, custo" + "from produto where id = ?"); 
+    		PreparedStatement stmt = ret.conn.prepareStatement("Select id, descricao, saldo, custo" + " from produto where id = ?"); 
     		stmt.setInt(1,cod);
     		//Colocando o parametro da query
     		stmt.setInt(1,cod);

@@ -30,33 +30,78 @@ public class TesteProdutoSimples {
 	}
 
 	private static void excluirProduto(Scanner sc) {
-		// TODO Auto-generated method stub
-		
+          System.out.println("Exclusao de produtos");	
+          ProdutoSimples prd = pesquisarProduto (sc);
+          //confirmação de exclusao
+          System.out.println("Tem certeza que deseja cancelar a exclusao ? (S/N)");
+          String res = sc.nextLine();
+          //Estou perguntando se quer CANCELAR a EXCLUSÃO!!
+          if (res.equalsIgnoreCase("N")) {
+        	  try {
+				prd.apagar();
+			} catch (SQLException e) {
+                 System.out.println(e.getMessage());
+			}//Fim do catch
+          }//fim do if
+          //voltando para menu
+          System.out.println("Digite algo para voltar ao menu");
+          sc.nextLine(); //capturar do ultimo enter numerico
 	}
 
 	private static void alterarProduto(Scanner sc) {
-		// TODO Auto-generated method stub
-		
+           System.out.println("Alteração de produto");
+           ProdutoSimples prd = pesquisarProduto(sc);
+           if (prd!=null) {
+        	   System.out.println("Digite a descrição do produto:");
+        	   prd.setDescricao(sc.nextLine());
+        	   
+        	   System.out.println("Digite o saldo do produto");
+        	   prd.setSaldo(sc.nextInt());
+        	   
+        	   System.out.println("Digite o custo do produto");
+        	   prd.setCusto(sc.nextDouble());
+        	   //como o ultimo campo foi número,capturamos o enter
+        	   sc.nextLine();
+        	   System.out.println("Confirma a alteração (S/N)");
+        	   String conf = sc.nextLine();
+        	   if (conf.equalsIgnoreCase("S")) {
+        		   try {
+					prd.gravar();
+				} catch (SQLException e) {
+					System.out.println(e.getMessage());
+				}
+        	   }//fim do if de confirmação
+           }
+           //voltando para menu
+           System.out.println("Digite algo para voltar ao menu");
+           sc.nextLine(); //capturar do ultimo enter numerico
 	}
 
 	private static void consultarProduto(Scanner sc) {
-		System.out.println("Consultar de Produtos");
-		System.out.println("Digite o codigo do produto a pesquisar:");
-		int cod = sc.nextInt();
-		try {
-			//Pesquisando produto
-			ProdutoSimples prd = ProdutoSimples.findByPK(cod);
-			//Mostrando produto
-			System.out.println(prd);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			System.out.println(e.getMessage());
-		}
+		System.out.println("Digite o codigo do produto a pesquisar");
+		pesquisarProduto(sc);
 		
 		//Pausa para voltar para menu
 		System.out.println("Digite algo para voltar ao menu");
 		
 		
+	}
+
+	private static ProdutoSimples pesquisarProduto(Scanner sc) {
+		System.out.println("Digite o codigo do produto a pesquisar:");
+		int cod = sc.nextInt();
+		sc.nextLine(); //captura do enter
+		try {
+			//Pesquisando produto
+			ProdutoSimples prd = ProdutoSimples.findByPK(cod);
+			//Mostrando produto
+			System.out.println(prd);
+			return prd;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
+		}
+		return null;
 	}
 
 	private static void criarProduto(Scanner sc) {
